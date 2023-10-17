@@ -3,12 +3,14 @@ lockfileVersion: 5.4
 specifiers:
   autoprefixer: ^10.4.16
   pixi.js-legacy: ^7.3.1
+  polybooljs: ^1.2.0
   postcss: ^8.4.31
   tailwindcss: ^3.3.3
   vite: ^4.4.5
 
 dependencies:
   pixi.js-legacy: 7.3.1
+  polybooljs: 1.2.0
 
 devDependencies:
   autoprefixer: 10.4.16_postcss@8.4.31
@@ -1213,6 +1215,10 @@ packages:
       '@pixi/text-html': 7.3.1_3crb6n5ul2chweohiscnh36qpa
     transitivePeerDependencies:
       - '@pixi/utils'
+    dev: false
+
+  /polybooljs/1.2.0:
+    resolution: {integrity: sha512-mKjR5nolISvF+q2BtC1fi/llpxBPTQ3wLWN8+ldzdw2Hocpc8C72ZqnamCM4Z6z+68GVVjkeM01WJegQmZ8MEQ==}
     dev: false
 
   /postcss-import/15.1.0_postcss@8.4.31:
