@@ -1,4 +1,5 @@
 import { Application, Assets, Sprite } from "pixi.js-legacy";
+import { DELTA_VALUES, pixiStore } from "../services/Store";
 
 /**
  * Render the pixi application
@@ -17,7 +18,7 @@ export async function renderScenes(app, container) {
     // It might cover the canvas element with a div with the absolute position and blocking out all of the interactions on Sprites, Stage and Containers.
     // Source - https://github.com/pixijs/pixijs/issues/5111
     const accessibilityPlugin = app.renderer.plugins.accessibility;
-    if(accessibilityPlugin) {
+    if (accessibilityPlugin) {
       app.renderer.plugins.accessibility.destroy();
       delete app.renderer.plugins.accessibility;
     }
@@ -30,6 +31,12 @@ export async function renderScenes(app, container) {
      * You can remove if you have already at least one Sprite in your Pixi application
      */
     const transparentTexture = await Assets.load("/transparent.png");
+
+    const { width, height } = transparentTexture;
+    const deltaX = app.screen.width / width;
+    const deltaY = app.screen.height / height;
+    pixiStore[DELTA_VALUES] = { x: deltaX, y: deltaY };
+
     const placeHolderSprite = new Sprite(transparentTexture);
     placeHolderSprite.width = app.screen.width;
     placeHolderSprite.height = app.screen.height;
