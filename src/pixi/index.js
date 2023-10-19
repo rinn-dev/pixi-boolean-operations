@@ -29,9 +29,6 @@ export async function initApplication(container) {
     // Appending canvas into the container
     container.appendChild(app.view);
 
-    // Canvas touch actions
-    app.view.style.touchAction = "auto";
-
     await renderScenes(app, container);
 
     // Rerender pixi application on window resizing
