@@ -16,8 +16,11 @@ export async function renderScenes(app, container) {
     // Destroy accessibility plugin that might cause some issues while clicking Tab key or Return key in IOS
     // It might cover the canvas element with a div with the absolute position and blocking out all of the interactions on Sprites, Stage and Containers.
     // Source - https://github.com/pixijs/pixijs/issues/5111
-    app.renderer.plugins.accessibility.destroy();
-    delete app.renderer.plugins.accessibility;
+    const accessibilityPlugin = app.renderer.plugins.accessibility;
+    if(accessibilityPlugin) {
+      app.renderer.plugins.accessibility.destroy();
+      delete app.renderer.plugins.accessibility;
+    }
 
     // Set initial event mode for stage
     app.stage.eventMode = "static";
