@@ -20,8 +20,8 @@ export function generateRectPoints(points) {
 
 /**
  * Sync current cursor position based on delta values calculated on canvas size and texture size to maintain standard values
- * @param {{x: number, y: number}} point- The points of the cursor
- * @returns {{x: number, y: number}} Synced cursor position
+ * @param {number[]} point- The points of the cursor
+ * @returns {number[]} Synced cursor position
  */
 
 export function syncPointPosition(point) {
@@ -29,8 +29,8 @@ export function syncPointPosition(point) {
 
   if (deltaValue != null) {
     const { x: deltaX, y: deltaY } = deltaValue;
-    const { x, y } = point;
-    return { x: +(x / deltaX).toFixed(4), y: +(y / deltaY).toFixed(4) };
+    const [x, y] = point;
+    return [+(x / deltaX).toFixed(4), +(y / deltaY).toFixed(4)];
   } else {
     return point;
   }
