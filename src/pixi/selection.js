@@ -84,7 +84,7 @@ export async function initSelectTool(app) {
   const onPointerUp = (e) => {
     e.stopPropagation();
     selectionBounds = [];
-    // selectionRectangle.clear();
+    selectionRectangle.clear();
   };
 
   const events = {
@@ -93,7 +93,6 @@ export async function initSelectTool(app) {
     pointerup: onPointerUp,
     pointerupoutside: onPointerUp,
     pointerout: onPointerUp,
-    touchmove: () => console.log("touchMove"),
   };
 
   Object.entries(events).map(([event, handler]) => {
