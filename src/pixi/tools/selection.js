@@ -3,14 +3,14 @@ import {
   generateRectPoints,
   getRectangleDrawingPoint,
   syncPointPosition,
-} from "../utils";
-import { selectionColor } from "../constants";
+} from "../../utils";
+import { selectionColor } from "../../constants";
 
 /**
- * Render the pixi application
+ * Initialize the selection tool of the Pixi application
  *
  * @param {Application<ICanvas>} app - The Pixi application instance.
- * @return {() => void} A function that cleanup the selection tool event listeners.
+ * @return {() => void} A function that cleans up the selection tool event listeners.
  */
 export async function initSelectTool(app) {
   let selectionBounds = [];
@@ -48,7 +48,7 @@ export async function initSelectTool(app) {
     // Ensure that's the left click on desktop
     if (e.button === 0) {
       const { x, y } = e.global;
-      selectionBounds = Object.values(syncPointPosition({ x, y }));
+      selectionBounds = syncPointPosition([x, y]);
     }
   };
 
@@ -62,12 +62,12 @@ export async function initSelectTool(app) {
     e.stopPropagation();
     if (selectionBounds.length >= 2) {
       const { x, y } = e.global;
-      const { x: endX, y: endY } = syncPointPosition({ x, y });
+      const [endX, endY] = syncPointPosition([x, y]);
       const [startX, startY] = selectionBounds;
       selectionBounds = [startX, startY, endX, endY];
 
       // Generate top left and bottom right points of the rectangle
-      // That ensure the drawing of the rectangle from any direction
+      // That ensure the functionality of the drawing of the rectangle from any direction
       rectanglePoints = generateRectPoints(selectionBounds);
 
       // Paint the rectangle
@@ -84,7 +84,7 @@ export async function initSelectTool(app) {
   const onPointerUp = (e) => {
     e.stopPropagation();
     selectionBounds = [];
-    // selectionRectangle.clear();
+    selectionRectangle.clear();
   };
 
   const events = {
@@ -93,7 +93,6 @@ export async function initSelectTool(app) {
     pointerup: onPointerUp,
     pointerupoutside: onPointerUp,
     pointerout: onPointerUp,
-    touchmove: () => console.log("touchMove"),
   };
 
   Object.entries(events).map(([event, handler]) => {
@@ -101,13 +100,18 @@ export async function initSelectTool(app) {
   });
 
   app.stage.addChild(selectionRectangle);
-  app.view.style.cursor = "crosshair";
+  app.view.classList.add("selection");
 
   // Repaint the rectangle on deltaValuesChanged event
   window.addEventListener("deltaValuesChanged", drawRect);
 
+  // Clean up function to be called on mode change
   return () => {
+    // Remove the graphic from the stage and free from memory
     app.stage.removeChild(selectionRectangle);
+    selectionRectangle.destroy(true);
+
+    // Remove event listeners
     Object.entries(events).map(([event, handler]) => {
       app.stage.removeEventListener(event, handler);
       window.removeEventListener("rerenderStage", drawRect);

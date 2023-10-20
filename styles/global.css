@@ -19,3 +19,11 @@
   margin: 0px;
   box-sizing: border-box;
 }
+
+.selection {
+  cursor: crosshair;
+}
+
+.pen {
+  cursor: url('pen.svg'), auto;
+}

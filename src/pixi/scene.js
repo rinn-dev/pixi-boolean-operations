@@ -42,6 +42,9 @@ export async function renderScenes(app, container) {
     placeHolderSprite.height = app.screen.height;
     app.stage.addChild(placeHolderSprite);
 
+    // Disable inline style for cursor
+    app.renderer.plugins.interaction.cursorStyles.default = null;
+
     // Disable right click context menu
     app.view.addEventListener("contextmenu", (e) => {
       e.preventDefault();
