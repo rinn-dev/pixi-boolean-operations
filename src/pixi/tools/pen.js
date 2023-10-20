@@ -1,6 +1,10 @@
-import { Application, FederatedPointerEvent, Graphics } from "pixi.js-legacy";
+import {
+  Application,
+  FederatedPointerEvent,
+  Graphics,
+  Container,
+} from "pixi.js-legacy";
 import { syncPointPosition } from "../../utils";
-import { selectionColor } from "../../constants";
 
 /**
  * Initialize the pen tool that is used to draw polygons of the Pixi application
@@ -9,16 +13,15 @@ import { selectionColor } from "../../constants";
  * @return {() => void} A function that cleans up the pen tool event listeners.
  */
 export async function initPenTool(app) {
+  let polygons = [];
   let polygonPoints = [];
   let hintingPos = [];
-  const polygon = new Graphics();
+  const container = new Container();
 
   /**
    * Draw a polygon on the PIXI application
    */
-  const drawPolygon = () => {
-    polygon.clear();
-  };
+  const drawPolygon = () => {};
 
   /**
    * Pointerdown event for pen tool
@@ -71,7 +74,7 @@ export async function initPenTool(app) {
     app.stage.addEventListener(event, handler);
   });
 
-  app.stage.addChild(polygon);
+  app.stage.addChild(container);
   app.view.classList.add("pen");
 
   // Repaint the rectangle on deltaValuesChanged event
@@ -80,8 +83,8 @@ export async function initPenTool(app) {
   // Clean up function to be called on mode change
   return () => {
     // Remove the graphic from the stage and free from memory
-    app.stage.removeChild(polygon);
-    polygon.destroy(true);
+    app.stage.removeChild(container);
+    container.destroy(true);
 
     // Remove event listeners
     Object.entries(events).map(([event, handler]) => {
