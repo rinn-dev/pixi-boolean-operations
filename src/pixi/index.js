@@ -1,7 +1,7 @@
 import { Application } from "pixi.js-legacy";
 import { renderScenes } from "./scene";
-import { initSelectTool } from "./tools/selection";
-// import { initPenTool } from "./tools/pen";
+// import { initSelectTool } from "./tools/selection";
+import { initPenTool } from "./tools/pen";
 
 /**
  * Initializes the PIXI application and appends it to the specified container element.
@@ -35,8 +35,8 @@ export async function initApplication(container) {
     // Rerender pixi application on window resizing
     window.addEventListener("resize", () => renderScenes(app, container));
 
-    await initSelectTool(app);
-    // await initPenTool(app);
+    // await initSelectTool(app);
+    await initPenTool(app);
 
     return app;
   } catch (e) {

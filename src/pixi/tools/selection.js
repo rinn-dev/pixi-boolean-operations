@@ -1,10 +1,10 @@
 import { Application, FederatedPointerEvent, Graphics } from "pixi.js-legacy";
 import {
   generateRectPoints,
-  getRectangleDrawingPoint,
+  getDrawingPoint,
   syncPointPosition,
 } from "../../utils";
-import { selectionColor } from "../../constants";
+import { primaryColor } from "../../constants";
 
 /**
  * Initialize the selection tool of the Pixi application
@@ -23,10 +23,10 @@ export async function initSelectTool(app) {
   const drawRect = () => {
     if (rectanglePoints.length == 4) {
       selectionRectangle.clear();
-      selectionRectangle.lineStyle(1, selectionColor, 1);
-      selectionRectangle.beginFill(selectionColor, 0.25);
+      selectionRectangle.lineStyle(1, primaryColor, 1);
+      selectionRectangle.beginFill(primaryColor, 0.25);
 
-      const [x1, y1, x2, y2] = getRectangleDrawingPoint(rectanglePoints);
+      const [x1, y1, x2, y2] = getDrawingPoint(rectanglePoints);
 
       const width = x2 - x1;
       const height = y2 - y1;

@@ -20,7 +20,7 @@ export function generateRectPoints(points) {
 
 /**
  * Sync current cursor position based on delta values calculated on canvas size and texture size to maintain standard values
- * @param {number[]} point- The points of the cursor
+ * @param {number[]} point - The points of the cursor
  * @returns {number[]} Synced cursor position
  */
 
@@ -37,14 +37,14 @@ export function syncPointPosition(point) {
 }
 
 /**
- * Get rectangle data based on current screen size
- * @param {number[]} point - The start point and end point of the rectangle
- * @returns {number[]} - The rectangle data based on current screen size
+ * Get graphic object data based on current screen size
+ * @param {number[]} point - The array of x and y points of the graphic object
+ * @returns {number[]} - The array of x and y points of the graphic object based on current screen size
  */
-export function getRectangleDrawingPoint(points) {
+export function getDrawingPoint(points) {
   const deltaValue = pixiStore[DELTA_VALUES];
 
-  if (deltaValue != null && points.length == 4) {
+  if (deltaValue != null) {
     return points.map((point, index) =>
       index % 2 == 0 ? point * deltaValue.x : point * deltaValue.y
     );
