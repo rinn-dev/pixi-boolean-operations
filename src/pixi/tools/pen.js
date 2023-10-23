@@ -6,6 +6,7 @@ import {
 } from "pixi.js-legacy";
 import { getDrawingPoint, roundPos, syncPointPosition } from "../../utils";
 import { secondaryColor, whiteColor } from "../../constants";
+import { POLYGONS, pixiStore } from "../../services/Store";
 
 /**
  * Initialize the pen tool that is used to draw polygons of the PIXI application
@@ -75,6 +76,7 @@ export async function initPenTool(app) {
   const resetDrawingPolygon = () => {
     drawingPolygonPoints = [];
     hintingPos = [];
+    drawPolygon(drawingPolygonPoints, drawingPolygon);
   };
 
   /**
@@ -82,7 +84,17 @@ export async function initPenTool(app) {
    * @returns {void}
    */
   const drawPolygons = () => {
+    const polygons = pixiStore[POLYGONS];
     resetDrawingPolygon();
+    polygons.forEach((polygon, index) => {
+      let graphic = graphics[index];
+      if (!graphic) {
+        graphic = new Graphics();
+        graphics[index] = graphic;
+        container.addChild(graphic);
+      }
+      drawPolygon(polygon, graphic, false);
+    });
   };
 
   /**
@@ -104,12 +116,12 @@ export async function initPenTool(app) {
         syncPointPosition([x, y])
       );
       roundedPos.forEach((value) => drawingPolygonPoints.push(value));
-
       if (isNearStartPoint) {
-        resetDrawingPolygon();
+        // Notice: that must be pure mutation (don't use .push) in order to trigger the proxy traps
+        pixiStore[POLYGONS] = [...pixiStore[POLYGONS], drawingPolygonPoints];
+      } else {
+        drawPolygon(drawingPolygonPoints, drawingPolygon);
       }
-
-      drawPolygon(drawingPolygonPoints, drawingPolygon);
     }
   };
 
@@ -126,7 +138,7 @@ export async function initPenTool(app) {
       const { x, y } = e.global;
 
       // Calculate and round the hinting position based on start point and current point
-      hintingPos = roundPos([x1, y1], syncPointPosition([x, y]), 5)[0];
+      hintingPos = roundPos([x1, y1], syncPointPosition([x, y]))[0];
       drawPolygon(drawingPolygonPoints, drawingPolygon);
     }
   };
@@ -149,15 +161,23 @@ export async function initPenTool(app) {
     rightclick: onRightClick,
   };
 
+  const windowEvents = {
+    deltaValuesChanged: drawPolygons,
+    polygonsChanged: drawPolygons,
+  };
+
+  // Add event listeners for pen tool
   Object.entries(events).map(([event, handler]) => {
     app.stage.addEventListener(event, handler);
   });
 
+  // Repaint the polygons on state changes
+  Object.entries(windowEvents).map(([event, handler]) => {
+    window.addEventListener(event, handler);
+  });
+
   app.stage.addChild(container);
   app.view.classList.add("pen");
-
-  // Repaint the polygons on deltaValuesChanged event
-  window.addEventListener("deltaValuesChanged", drawPolygons);
 
   // Clean up function to be called on mode change
   return () => {
@@ -168,7 +188,10 @@ export async function initPenTool(app) {
     // Remove event listeners
     Object.entries(events).map(([event, handler]) => {
       app.stage.removeEventListener(event, handler);
-      window.removeEventListener("rerenderStage", drawPolygons);
+    });
+
+    Object.entries(windowEvents).map(([event, handler]) => {
+      window.removeEventListener(event, handler);
     });
   };
 }

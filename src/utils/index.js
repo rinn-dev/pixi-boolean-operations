@@ -63,7 +63,7 @@ export function getDrawingPoint(points) {
  * const currentPoint = [10,10];
  * const [position, isNearStartPoint] = roundPos(startPoint, currentPoint);
  */
-export function roundPos(startPoint, currentPoint, diffFactor = 3) {
+export function roundPos(startPoint, currentPoint, diffFactor = 5) {
   if (startPoint.length < 2) {
     return [currentPoint, false];
   }
