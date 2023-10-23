@@ -4,7 +4,7 @@ import {
   Graphics,
   Container,
 } from "pixi.js-legacy";
-import { getDrawingPoint, syncPointPosition } from "../../utils";
+import { getDrawingPoint, roundPos, syncPointPosition } from "../../utils";
 import { secondaryColor, whiteColor } from "../../constants";
 
 /**
@@ -31,8 +31,9 @@ export async function initPenTool(app) {
    * @returns {void}
    */
   const drawPolygon = (points, graphic, hasCircles = true) => {
+    graphic.clear();
+
     if (graphic != null && points.length > 0) {
-      graphic.clear();
       graphic.lineStyle(2, secondaryColor);
       graphic.beginFill(secondaryColor, 0.25);
 
@@ -53,11 +54,14 @@ export async function initPenTool(app) {
       // Draw circles on each polygon node
       if (hasCircles) {
         graphic.lineStyle(2, secondaryColor);
-        graphic.beginFill(whiteColor);
+        graphic.beginFill(secondaryColor);
         while (nodes.length) {
           const x = nodes.shift();
           const y = nodes.shift();
           graphic.drawCircle(x, y, 3.5);
+
+          graphic.lineStyle(2, secondaryColor);
+          graphic.beginFill(whiteColor);
         }
         graphic.endFill();
       }
@@ -65,12 +69,20 @@ export async function initPenTool(app) {
   };
 
   /**
-   * Draw the stored polygons and inprogress drawing one on deltaValues changed
+   * Reset drawing polygon points
+   * @returns {void}
+   */
+  const resetDrawingPolygon = () => {
+    drawingPolygonPoints = [];
+    hintingPos = [];
+  };
+
+  /**
+   * Draw the stored polygons and reset drawing one on deltaValues changed (i.e. on resizing)
    * @returns {void}
    */
   const drawPolygons = () => {
-    drawingPolygonPoints = [];
-    hintingPos = [];
+    resetDrawingPolygon();
   };
 
   /**
@@ -87,9 +99,16 @@ export async function initPenTool(app) {
       const { x, y } = e.global;
 
       // Push points into drawing polygon array
-      syncPointPosition([x, y]).forEach((value) =>
-        drawingPolygonPoints.push(value)
+      const [roundedPos, isNearStartPoint] = roundPos(
+        drawingPolygonPoints.slice(0, 2),
+        syncPointPosition([x, y])
       );
+      roundedPos.forEach((value) => drawingPolygonPoints.push(value));
+
+      if (isNearStartPoint) {
+        resetDrawingPolygon();
+      }
+
       drawPolygon(drawingPolygonPoints, drawingPolygon);
     }
   };
@@ -103,15 +122,31 @@ export async function initPenTool(app) {
   const onPointerMove = (e) => {
     e.stopPropagation();
     if (drawingPolygonPoints.length) {
+      const [x1, y1] = drawingPolygonPoints;
       const { x, y } = e.global;
-      hintingPos = syncPointPosition([x, y]);
+
+      // Calculate and round the hinting position based on start point and current point
+      hintingPos = roundPos([x1, y1], syncPointPosition([x, y]), 5)[0];
       drawPolygon(drawingPolygonPoints, drawingPolygon);
     }
+  };
+
+  /**
+   * Stop drawing and reset points on right click
+   *
+   * @param {FederatedPointerEvent} e - Pointer event
+   * @returns {void}
+   */
+  const onRightClick = (e) => {
+    e.stopPropagation();
+    resetDrawingPolygon();
+    drawPolygon(drawingPolygonPoints, drawingPolygon);
   };
 
   const events = {
     pointerdown: onPointerDown,
     pointermove: onPointerMove,
+    rightclick: onRightClick,
   };
 
   Object.entries(events).map(([event, handler]) => {

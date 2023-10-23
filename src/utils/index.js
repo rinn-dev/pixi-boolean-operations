@@ -50,3 +50,34 @@ export function getDrawingPoint(points) {
 
   return points;
 }
+
+/**
+ * Calculates and rounds the position of a segment based on its start and current points.
+ *
+ * @param {number[]} startPoint - The starting point of the segment.
+ * @param {number[]} currentPoint - The current point of the segment.
+ * @returns {[number[], boolean]} An array containing the calculated position and a boolean value indicating whether the position is near the starting point.
+ *
+ * @example
+ * const startPoint = [0,0];
+ * const currentPoint = [10,10];
+ * const [position, isNearStartPoint] = roundPos(startPoint, currentPoint);
+ */
+export function roundPos(startPoint, currentPoint, diffFactor = 3) {
+  if (startPoint.length < 2) {
+    return [currentPoint, false];
+  }
+
+  const [x1, y1] = startPoint;
+  const [x2, y2] = currentPoint;
+
+  const xDiff = Math.abs(x2 - x1);
+  const yDiff = Math.abs(y2 - y1);
+
+  const isNearStartPoint = xDiff < diffFactor && yDiff < diffFactor;
+
+  const xPos = isNearStartPoint ? x1 : x2;
+  const yPos = isNearStartPoint ? y1 : y2;
+
+  return [[xPos, yPos], isNearStartPoint];
+}
