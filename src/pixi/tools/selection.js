@@ -1,16 +1,16 @@
 import { Application, FederatedPointerEvent, Graphics } from "pixi.js-legacy";
 import {
   generateRectPoints,
-  getRectangleDrawingPoint,
+  getDrawingPoint,
   syncPointPosition,
 } from "../../utils";
-import { selectionColor } from "../../constants";
+import { primaryColor } from "../../constants";
 
 /**
- * Initialize the selection tool of the Pixi application
+ * Initialize the selection tool of the PIXI application
  *
- * @param {Application<ICanvas>} app - The Pixi application instance.
- * @return {() => void} A function that cleans up the selection tool event listeners.
+ * @param {Application<ICanvas>} app - The PIXI application instance.
+ * @returns {() => void} A function that cleans up the selection tool event listeners.
  */
 export async function initSelectTool(app) {
   let selectionBounds = [];
@@ -23,10 +23,10 @@ export async function initSelectTool(app) {
   const drawRect = () => {
     if (rectanglePoints.length == 4) {
       selectionRectangle.clear();
-      selectionRectangle.lineStyle(1, selectionColor, 1);
-      selectionRectangle.beginFill(selectionColor, 0.25);
+      selectionRectangle.lineStyle(1, primaryColor, 1);
+      selectionRectangle.beginFill(primaryColor, 0.25);
 
-      const [x1, y1, x2, y2] = getRectangleDrawingPoint(rectanglePoints);
+      const [x1, y1, x2, y2] = getDrawingPoint(rectanglePoints);
 
       const width = x2 - x1;
       const height = y2 - y1;
@@ -40,7 +40,7 @@ export async function initSelectTool(app) {
    * Pointerdown event for selection tool
    *
    * @param {FederatedPointerEvent} e - Pointer event
-   * @return {void}
+   * @returns {void}
    */
   const onPointerDown = (e) => {
     e.stopPropagation();
@@ -56,7 +56,7 @@ export async function initSelectTool(app) {
    * Pointermove event for selection tool
    *
    * @param {FederatedPointerEvent} e - Pointer event
-   * @return {void}
+   * @returns {void}
    */
   const onPointerMove = (e) => {
     e.stopPropagation();
@@ -79,7 +79,7 @@ export async function initSelectTool(app) {
    * Pointerup event for selection tool
    *
    * @param {FederatedPointerEvent} e - Pointer event
-   * @return {void}
+   * @returns {void}
    */
   const onPointerUp = (e) => {
     e.stopPropagation();

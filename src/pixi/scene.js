@@ -2,10 +2,10 @@ import { Application, Assets, Sprite } from "pixi.js-legacy";
 import { DELTA_VALUES, pixiStore } from "../services/Store";
 
 /**
- * Render the pixi application
+ * Render the PIXI application
  *
- * @param {Application<ICanvas>} app - The Pixi application instance.
- * @param {HTMLElement} container - The HTML element containing the Pixi canvas.
+ * @param {Application<ICanvas>} app - The PIXI application instance.
+ * @param {HTMLElement} container - The HTML element containing the PIXI canvas.
  */
 export async function renderScenes(app, container) {
   const { clientWidth } = container;
@@ -28,7 +28,7 @@ export async function renderScenes(app, container) {
 
     /**
      * Registering interaction events on Stage or Container won't be working without a Sprite
-     * You can remove if you have already at least one Sprite in your Pixi application
+     * You can remove if you have already at least one Sprite in your PIXI application
      */
     const transparentTexture = await Assets.load("/transparent.png");
 
