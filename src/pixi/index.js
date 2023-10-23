@@ -20,7 +20,7 @@ export async function initApplication(container) {
     const app = new Application({
       width: clientWidth, // Canvas width
       backgroundAlpha: 0.001, // Background opacity of the canvas,
-      resolution: dpr > 2 ? dpr : 2, // Resolution for pixi application
+      resolution: dpr > 2 ? dpr : 2, // Resolution for PIXI application
       autoDensity: true, // Sync canvas style (width and height) on calling app.renderer.resize() method
     });
 
@@ -32,7 +32,7 @@ export async function initApplication(container) {
 
     await renderScenes(app, container);
 
-    // Rerender pixi application on window resizing
+    // Rerender PIXI application on window resizing
     window.addEventListener("resize", () => renderScenes(app, container));
 
     // initSelectTool(app);

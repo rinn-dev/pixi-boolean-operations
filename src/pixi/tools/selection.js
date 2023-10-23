@@ -7,9 +7,9 @@ import {
 import { primaryColor } from "../../constants";
 
 /**
- * Initialize the selection tool of the Pixi application
+ * Initialize the selection tool of the PIXI application
  *
- * @param {Application<ICanvas>} app - The Pixi application instance.
+ * @param {Application<ICanvas>} app - The PIXI application instance.
  * @returns {() => void} A function that cleans up the selection tool event listeners.
  */
 export async function initSelectTool(app) {

@@ -8,9 +8,9 @@ import { getDrawingPoint, roundPos, syncPointPosition } from "../../utils";
 import { secondaryColor, whiteColor } from "../../constants";
 
 /**
- * Initialize the pen tool that is used to draw polygons of the Pixi application
+ * Initialize the pen tool that is used to draw polygons of the PIXI application
  *
- * @param {Application<ICanvas>} app - The Pixi application instance.
+ * @param {Application<ICanvas>} app - The PIXI application instance.
  * @return {() => void} A function that cleans up the pen tool event listeners.
  */
 export async function initPenTool(app) {
