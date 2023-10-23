@@ -5,7 +5,7 @@ import {
   Container,
 } from "pixi.js-legacy";
 import { getDrawingPoint, syncPointPosition } from "../../utils";
-import { secondaryColor } from "../../constants";
+import { secondaryColor, whiteColor } from "../../constants";
 
 /**
  * Initialize the pen tool that is used to draw polygons of the Pixi application
@@ -27,7 +27,7 @@ export async function initPenTool(app) {
    * Draw a polygon on the PIXI application
    * @param {number[]} points - Node points of the polygon
    * @param {Graphics} graphic - PIXI graphic instance
-   * @param {boolean} hasCircles - Precense of circles on each polygon node
+   * @param {boolean} hasCircles - Precence of circles on each polygon node
    * @returns {void}
    */
   const drawPolygon = (points, graphic, hasCircles = true) => {
@@ -36,19 +36,31 @@ export async function initPenTool(app) {
       graphic.lineStyle(2, secondaryColor);
       graphic.beginFill(secondaryColor, 0.25);
 
-      const [startX, startY, ...restPoints] = getDrawingPoint(
-        points.concat(hintingPos)
-      );
+      // Get the drawing points based on current screen size
+      const nodes = getDrawingPoint(points.concat(hintingPos));
+      const [startX, startY, ...restPoints] = nodes;
+
+      // Move to the first polygon node
       graphic.moveTo(startX, startY);
 
+      // Draw lines between each polygon node
       while (restPoints.length) {
         const x = restPoints.shift();
         const y = restPoints.shift();
-
         graphic.lineTo(x, y);
       }
 
-      graphic.endFill();
+      // Draw circles on each polygon node
+      if (hasCircles) {
+        graphic.lineStyle(2, secondaryColor);
+        graphic.beginFill(whiteColor);
+        while (nodes.length) {
+          const x = nodes.shift();
+          const y = nodes.shift();
+          graphic.drawCircle(x, y, 3.5);
+        }
+        graphic.endFill();
+      }
     }
   };
 
@@ -57,7 +69,8 @@ export async function initPenTool(app) {
    * @returns {void}
    */
   const drawPolygons = () => {
-    drawPolygon(drawingPolygonPoints, drawingPolygon);
+    drawingPolygonPoints = [];
+    hintingPos = [];
   };
 
   /**
@@ -108,7 +121,7 @@ export async function initPenTool(app) {
   app.stage.addChild(container);
   app.view.classList.add("pen");
 
-  // Repaint the rectangle on deltaValuesChanged event
+  // Repaint the polygons on deltaValuesChanged event
   window.addEventListener("deltaValuesChanged", drawPolygons);
 
   // Clean up function to be called on mode change
