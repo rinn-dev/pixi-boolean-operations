@@ -10,7 +10,7 @@ import { primaryColor } from "../../constants";
  * Initialize the selection tool of the Pixi application
  *
  * @param {Application<ICanvas>} app - The Pixi application instance.
- * @return {() => void} A function that cleans up the selection tool event listeners.
+ * @returns {() => void} A function that cleans up the selection tool event listeners.
  */
 export async function initSelectTool(app) {
   let selectionBounds = [];
@@ -40,7 +40,7 @@ export async function initSelectTool(app) {
    * Pointerdown event for selection tool
    *
    * @param {FederatedPointerEvent} e - Pointer event
-   * @return {void}
+   * @returns {void}
    */
   const onPointerDown = (e) => {
     e.stopPropagation();
@@ -56,7 +56,7 @@ export async function initSelectTool(app) {
    * Pointermove event for selection tool
    *
    * @param {FederatedPointerEvent} e - Pointer event
-   * @return {void}
+   * @returns {void}
    */
   const onPointerMove = (e) => {
     e.stopPropagation();
@@ -79,7 +79,7 @@ export async function initSelectTool(app) {
    * Pointerup event for selection tool
    *
    * @param {FederatedPointerEvent} e - Pointer event
-   * @return {void}
+   * @returns {void}
    */
   const onPointerUp = (e) => {
     e.stopPropagation();

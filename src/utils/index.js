@@ -1,11 +1,10 @@
+import { DELTA_VALUES, pixiStore } from "../services/Store";
+
 /**
  * Sort and generate rectangle points
  * @param {number[]} points - The points of the rectangle
  * @returns {number[]} An array of 4 numbers representing the coordinates of the top-left and bottom-right points of a rectangle
  */
-
-import { DELTA_VALUES, pixiStore } from "../services/Store";
-
 export function generateRectPoints(points) {
   const [startX, startY, endX, endY] = points;
 
@@ -23,7 +22,6 @@ export function generateRectPoints(points) {
  * @param {number[]} point - The points of the cursor
  * @returns {number[]} Synced cursor position
  */
-
 export function syncPointPosition(point) {
   const deltaValue = pixiStore[DELTA_VALUES];
 

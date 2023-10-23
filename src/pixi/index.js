@@ -35,8 +35,8 @@ export async function initApplication(container) {
     // Rerender pixi application on window resizing
     window.addEventListener("resize", () => renderScenes(app, container));
 
-    // await initSelectTool(app);
-    await initPenTool(app);
+    // initSelectTool(app);
+    initPenTool(app);
 
     return app;
   } catch (e) {

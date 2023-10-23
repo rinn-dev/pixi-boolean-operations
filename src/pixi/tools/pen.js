@@ -28,11 +28,10 @@ export async function initPenTool(app) {
    * @param {number[]} points - Node points of the polygon
    * @param {Graphics} graphic - PIXI graphic instance
    * @param {boolean} hasCircles - Precense of circles on each polygon node
-   * @return {void}
+   * @returns {void}
    */
   const drawPolygon = (points, graphic, hasCircles = true) => {
     if (graphic != null && points.length > 0) {
-      console.log(points);
       graphic.clear();
       graphic.lineStyle(2, secondaryColor);
       graphic.beginFill(secondaryColor, 0.25);
@@ -53,6 +52,10 @@ export async function initPenTool(app) {
     }
   };
 
+  /**
+   * Draw the stored polygons and inprogress drawing one on deltaValues changed
+   * @returns {void}
+   */
   const drawPolygons = () => {
     drawPolygon(drawingPolygonPoints, drawingPolygon);
   };
@@ -61,7 +64,7 @@ export async function initPenTool(app) {
    * Pointerdown event for pen tool
    *
    * @param {FederatedPointerEvent} e - Pointer event
-   * @return {void}
+   * @returns {void}
    */
   const onPointerDown = (e) => {
     e.stopPropagation();
@@ -82,7 +85,7 @@ export async function initPenTool(app) {
    * Pointermove event for pen tool that calculates and rounds the hinting position
    *
    * @param {FederatedPointerEvent} e - Pointer event
-   * @return {void}
+   * @returns {void}
    */
   const onPointerMove = (e) => {
     e.stopPropagation();
@@ -93,22 +96,9 @@ export async function initPenTool(app) {
     }
   };
 
-  /**
-   * Pointerup event for selection tool
-   *
-   * @param {FederatedPointerEvent} e - Pointer event
-   * @return {void}
-   */
-  const onPointerUp = (e) => {
-    e.stopPropagation();
-  };
-
   const events = {
     pointerdown: onPointerDown,
     pointermove: onPointerMove,
-    pointerup: onPointerUp,
-    pointerupoutside: onPointerUp,
-    pointerout: onPointerUp,
   };
 
   Object.entries(events).map(([event, handler]) => {
