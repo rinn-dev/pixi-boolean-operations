@@ -1,5 +1,5 @@
 import { Application } from "pixi.js-legacy";
-import { MODE, pixiStore } from "../services/Store";
+import { MODE, SELECTED_POLYGON, pixiStore } from "../services/Store";
 import { initPenTool } from "./tools/pen";
 import { initSelectTool } from "./tools/selection";
 
@@ -52,5 +52,7 @@ export function getModeHandler(app, cleanupFunction = () => void 0) {
         cleanupFunction = initSelectTool(app);
         break;
     }
+    // To trigger adding selection handlers on polygons
+    pixiStore[SELECTED_POLYGON] = [];
   };
 }

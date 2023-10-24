@@ -6,7 +6,12 @@ import {
 } from "pixi.js-legacy";
 import { getDrawingPoint, roundPos, syncPointPosition } from "../../utils";
 import { secondaryColor, whiteColor } from "../../constants";
-import { POLYGONS, pixiStore } from "../../services/Store";
+import {
+  MODE,
+  POLYGONS,
+  SELECTED_POLYGON,
+  pixiStore,
+} from "../../services/Store";
 
 /**
  * Initialize the pen tool that is used to draw polygons of the PIXI application
@@ -25,18 +30,36 @@ export function initPenTool(app) {
   container.addChild(drawingPolygon);
 
   /**
+   * Get the handler event for selection mode based on index
+   * @param {number} index - Index of the selected polygon
+   * @returns {() => void} handler function for single selection of polygon
+   */
+  function handleSelection(index) {
+    return () => {
+      const selectedPolygons = pixiStore[SELECTED_POLYGON];
+      if (selectedPolygons.includes(index)) {
+        pixiStore[SELECTED_POLYGON] = selectedPolygons.filter(
+          (polygonIndex) => polygonIndex !== index
+        );
+      } else {
+        pixiStore[SELECTED_POLYGON] = [...selectedPolygons, index];
+      }
+    };
+  }
+
+  /**
    * Draw a polygon on the PIXI application
    * @param {number[]} points - Node points of the polygon
    * @param {Graphics} graphic - PIXI graphic instance
    * @param {boolean} hasCircles - Precence of circles on each polygon node
    * @returns {void}
    */
-  const drawPolygon = (points, graphic, hasCircles = true) => {
+  const drawPolygon = (points, graphic, hasCircles = true, fill = true) => {
     graphic.clear();
 
     if (graphic != null && points.length > 0) {
       graphic.lineStyle(2, secondaryColor);
-      graphic.beginFill(secondaryColor, 0.25);
+      graphic.beginFill(secondaryColor, fill ? 0.25 : 0.05);
 
       // Get the drawing points based on current screen size
       const nodes = getDrawingPoint(points.concat(hintingPos));
@@ -85,6 +108,7 @@ export function initPenTool(app) {
    */
   const drawPolygons = () => {
     const polygons = pixiStore[POLYGONS];
+    const selectedPolygons = pixiStore[SELECTED_POLYGON];
     resetDrawingPolygon();
     polygons.forEach((polygon, index) => {
       let graphic = graphics[index];
@@ -93,7 +117,14 @@ export function initPenTool(app) {
         graphics[index] = graphic;
         container.addChild(graphic);
       }
-      drawPolygon(polygon, graphic, false);
+      drawPolygon(polygon, graphic, false, selectedPolygons.includes(index));
+
+      if (pixiStore[MODE] != "select") {
+        graphic.removeAllListeners();
+      } else {
+        graphic.eventMode = "static";
+        graphic.addEventListener("pointerdown", handleSelection(index));
+      }
     });
   };
 
@@ -164,6 +195,7 @@ export function initPenTool(app) {
   const windowEvents = {
     deltaValuesChanged: drawPolygons,
     polygonsChanged: drawPolygons,
+    polygonsSelected: drawPolygons, // To paint the highlight of the selected polygons
   };
 
   // Add event listeners for pen tool
