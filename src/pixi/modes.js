@@ -40,8 +40,10 @@ export function changeMode(e, mode) {
 export function getModeHandler(app, cleanupFunction = () => void 0) {
   return () => {
     const selectedMode = pixiStore[MODE];
+    // Clean up events and memory of the previous mode
     cleanupFunction && cleanupFunction();
 
+    // Reassign the clean up function for current mode to be used in the next mode change
     switch (selectedMode) {
       case "pen":
         cleanupFunction = initPenTool(app);
