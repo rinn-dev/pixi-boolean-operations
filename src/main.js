@@ -1,9 +1,14 @@
 import "../styles/global.css";
 import { initApplication } from "./pixi";
-import { pixiStore } from "./services/Store";
+import { bindModeEvents } from "./pixi/modes";
+import { MODE, pixiStore } from "./services/Store";
 
 window.addEventListener("DOMContentLoaded", async () => {
   const container = document.querySelector(".canvas-container");
-  await initApplication(container);
+  const app = await initApplication(container);
   window.pixiStore = pixiStore;
+  bindModeEvents(app);
+
+  // Set default mode
+  pixiStore[MODE] = "select";
 });

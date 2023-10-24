@@ -14,7 +14,7 @@ import { POLYGONS, pixiStore } from "../../services/Store";
  * @param {Application<ICanvas>} app - The PIXI application instance.
  * @return {() => void} A function that cleans up the pen tool event listeners.
  */
-export async function initPenTool(app) {
+export function initPenTool(app) {
   let drawingPolygonPoints = [];
   let hintingPos = [];
   const container = new Container();
@@ -181,17 +181,9 @@ export async function initPenTool(app) {
 
   // Clean up function to be called on mode change
   return () => {
-    // Remove the graphic from the stage and free from memory
-    app.stage.removeChild(container);
-    container.destroy(true);
-
     // Remove event listeners
     Object.entries(events).map(([event, handler]) => {
       app.stage.removeEventListener(event, handler);
-    });
-
-    Object.entries(windowEvents).map(([event, handler]) => {
-      window.removeEventListener(event, handler);
     });
   };
 }
