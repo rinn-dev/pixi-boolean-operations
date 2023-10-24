@@ -1,6 +1,7 @@
 export const MODE = "mode";
 export const DELTA_VALUES = "deltaValues";
 export const POLYGONS = "polygons";
+export const SELECTED_POLYGON = "selectedPolygons";
 
 /**
  * @typedef {Object} Store - The Store object represents a store that holds application data and dispatch related events on mutation.
@@ -12,12 +13,14 @@ const Store = {
   [MODE]: "select",
   [DELTA_VALUES]: null,
   [POLYGONS]: [],
+  [SELECTED_POLYGON]: [],
 };
 
 const events = {
   [MODE]: "modeChanged",
   [DELTA_VALUES]: "deltaValuesChanged",
   [POLYGONS]: "polygonsChanged",
+  [SELECTED_POLYGON]: "polygonsSelected",
 };
 
 export const pixiStore = new Proxy(Store, {

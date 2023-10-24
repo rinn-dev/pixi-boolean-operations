@@ -11,4 +11,7 @@ window.addEventListener("DOMContentLoaded", async () => {
 
   // Set default mode
   pixiStore[MODE] = "select";
+
+  // For debugging
+  window.store = pixiStore;
 });
