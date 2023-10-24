@@ -5,7 +5,7 @@ import { pixiStore } from "./services/Store";
 
 window.addEventListener("DOMContentLoaded", async () => {
   const container = document.querySelector(".canvas-container");
-  await initApplication(container);
+  const app = await initApplication(container);
   window.pixiStore = pixiStore;
-  bindModeEvents();
+  bindModeEvents(app);
 });

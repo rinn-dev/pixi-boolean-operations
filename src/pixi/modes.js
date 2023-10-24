@@ -1,16 +1,20 @@
+import { Application } from "pixi.js-legacy";
 import { MODE, pixiStore } from "../services/Store";
+import { initPenTool } from "./tools/pen";
+import { initSelectTool } from "./tools/selection";
 
 /**
  * Bind mode change events to the buttons
+ * @param {Application} app - The PIXI application
  */
-export function bindModeEvents() {
+export function bindModeEvents(app) {
   document
     .querySelectorAll(".tool")
     .forEach((tool) =>
       tool.addEventListener("click", (e) => changeMode(e, tool.id))
     );
 
-  window.addEventListener("modeChanged", modeHandler);
+  window.addEventListener("modeChanged", getModeHandler(app));
 }
 
 /**
@@ -28,9 +32,25 @@ export function changeMode(e, mode) {
 }
 
 /**
- * Handle mode changes
+ * A closure function that returns mode handler function
+ * @param {Application} app - The PIXI application
+ * @param {() => void} cleanupFunction - The cleanup function for the previous mode
+ * @returns {() => void} Mode handler function
  */
-export function modeHandler() {
-  const selectedMode = pixiStore[MODE];
-  console.log(selectedMode);
+export function getModeHandler(app, cleanupFunction = () => void 0) {
+  return () => {
+    const selectedMode = pixiStore[MODE];
+    cleanupFunction && cleanupFunction();
+    console.log({ app, cleanupFunction });
+
+    switch (selectedMode) {
+      case "pen":
+        cleanupFunction = initPenTool(app);
+        break;
+      default:
+        cleanupFunction = initSelectTool(app);
+        break;
+    }
+    console.log({ cleanupFunction });
+  };
 }

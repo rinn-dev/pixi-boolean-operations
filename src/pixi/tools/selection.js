@@ -12,7 +12,7 @@ import { primaryColor } from "../../constants";
  * @param {Application<ICanvas>} app - The PIXI application instance.
  * @returns {() => void} A function that cleans up the selection tool event listeners.
  */
-export async function initSelectTool(app) {
+export function initSelectTool(app) {
   let selectionBounds = [];
   let rectanglePoints = [];
   const selectionRectangle = new Graphics();
