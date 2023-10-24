@@ -41,7 +41,6 @@ export function getModeHandler(app, cleanupFunction = () => void 0) {
   return () => {
     const selectedMode = pixiStore[MODE];
     cleanupFunction && cleanupFunction();
-    console.log({ app, cleanupFunction });
 
     switch (selectedMode) {
       case "pen":
@@ -51,6 +50,5 @@ export function getModeHandler(app, cleanupFunction = () => void 0) {
         cleanupFunction = initSelectTool(app);
         break;
     }
-    console.log({ cleanupFunction });
   };
 }

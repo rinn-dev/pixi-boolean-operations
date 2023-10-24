@@ -181,18 +181,9 @@ export function initPenTool(app) {
 
   // Clean up function to be called on mode change
   return () => {
-    // Remove the graphic from the stage and free from memory
-    app.stage.removeChild(container);
-    container.destroy(true);
-
     // Remove event listeners
     Object.entries(events).map(([event, handler]) => {
       app.stage.removeEventListener(event, handler);
     });
-
-    Object.entries(windowEvents).map(([event, handler]) => {
-      window.removeEventListener(event, handler);
-    });
-    console.log("Cleaned up selection tool");
   };
 }
