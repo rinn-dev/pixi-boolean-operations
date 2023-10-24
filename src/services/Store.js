@@ -23,7 +23,7 @@ const events = {
 export const pixiStore = new Proxy(Store, {
   set(target, key, value) {
     target[key] = value;
-    console.log(events[key] ?? "rerenderStage");
+
     window.dispatchEvent(new Event(events[key] ?? "rerenderStage"));
     return true;
   },
