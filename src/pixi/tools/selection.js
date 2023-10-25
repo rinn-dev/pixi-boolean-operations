@@ -49,6 +49,7 @@ export function initSelectTool(app) {
     if (e.button === 0) {
       const { x, y } = e.global;
       selectionBounds = syncPointPosition([x, y]);
+      dispatchEvent(new Event("rubberbandSelectionStart"));
     }
   };
 
@@ -85,6 +86,7 @@ export function initSelectTool(app) {
     e.stopPropagation();
     selectionBounds = [];
     selectionRectangle.clear();
+    dispatchEvent(new Event("rubberbandSelectionEnd"));
   };
 
   const events = {
@@ -92,7 +94,6 @@ export function initSelectTool(app) {
     pointermove: onPointerMove,
     pointerup: onPointerUp,
     pointerupoutside: onPointerUp,
-    pointerout: onPointerUp,
   };
 
   Object.entries(events).map(([event, handler]) => {
