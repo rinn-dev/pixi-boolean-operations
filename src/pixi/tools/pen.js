@@ -35,7 +35,8 @@ export function initPenTool(app) {
    * @returns {() => void} handler function for single selection of polygon
    */
   function handleSelection(index) {
-    return () => {
+    return (e) => {
+      e.stopPropagation();
       const selectedPolygons = pixiStore[SELECTED_POLYGON];
       if (selectedPolygons.includes(index)) {
         pixiStore[SELECTED_POLYGON] = selectedPolygons.filter(
@@ -99,7 +100,9 @@ export function initPenTool(app) {
   const resetDrawingPolygon = () => {
     drawingPolygonPoints = [];
     hintingPos = [];
-    drawPolygon(drawingPolygonPoints, drawingPolygon);
+    if (drawingPolygon) {
+      drawPolygon(drawingPolygonPoints, drawingPolygon);
+    }
   };
 
   /**
@@ -117,10 +120,12 @@ export function initPenTool(app) {
         graphics[index] = graphic;
         container.addChild(graphic);
       }
+
       drawPolygon(polygon, graphic, false, selectedPolygons.includes(index));
 
       if (pixiStore[MODE] != "select") {
         graphic.removeAllListeners();
+        graphic.eventMode = "none";
       } else {
         graphic.eventMode = "static";
         graphic.addEventListener("pointerdown", handleSelection(index));
@@ -186,6 +191,25 @@ export function initPenTool(app) {
     drawPolygon(drawingPolygonPoints, drawingPolygon);
   };
 
+  /**
+   * Toggle the interaction of polygons (to disable interactions on rubberband selection)
+   * @param {boolean} isInteractive - Boolean flag to toggle interactions
+   * @returns {void}
+   */
+  const toggleInteraction = (isInteractive = true) => {
+    graphics.forEach((graphic, index) => {
+      graphic.removeAllListeners();
+      if (isInteractive) {
+        graphic.eventMode = "static";
+        graphic.addEventListener("pointerdown", handleSelection(index));
+        console.log("Add");
+      } else {
+        graphic.eventMode = "none";
+        console.log("Remove");
+      }
+    });
+  };
+
   const events = {
     pointerdown: onPointerDown,
     pointermove: onPointerMove,
@@ -198,15 +222,22 @@ export function initPenTool(app) {
     polygonsSelected: drawPolygons, // To paint the highlight of the selected polygons
   };
 
+  const windowTempEvents = {
+    rubberbandSelectionStart: () => toggleInteraction(false), // To remove the interactive events on polygons while on rubberband selection
+    rubberbandSelectionEnd: () => toggleInteraction(true), // To add the interactive events on polygons while the rubberband selection ends
+  };
+
   // Add event listeners for pen tool
   Object.entries(events).map(([event, handler]) => {
     app.stage.addEventListener(event, handler);
   });
 
   // Repaint the polygons on state changes
-  Object.entries(windowEvents).map(([event, handler]) => {
-    window.addEventListener(event, handler);
-  });
+  Object.entries({ ...windowEvents, ...windowTempEvents }).map(
+    ([event, handler]) => {
+      window.addEventListener(event, handler);
+    }
+  );
 
   app.stage.addChild(container);
   app.view.classList.add("pen");
@@ -217,6 +248,8 @@ export function initPenTool(app) {
     Object.entries(events).map(([event, handler]) => {
       app.stage.removeEventListener(event, handler);
     });
+
+    container.destroy(true);
 
     // Remove cursor
     app.view.classList.remove("pen");

@@ -21,7 +21,7 @@
 }
 
 .selection {
-  cursor: crosshair;
+  cursor: pointer;
 }
 
 .pen {
