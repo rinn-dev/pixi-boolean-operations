@@ -1,5 +1,10 @@
 import { MODE, POLYGONS, SELECTED_POLYGON, pixiStore } from "../services/Store";
-import { Container, Application, Graphics } from "pixi.js-legacy";
+import {
+  Container,
+  Application,
+  Graphics,
+  FederatedPointerEvent,
+} from "pixi.js-legacy";
 import { drawPolygon } from "../utils";
 
 /**
@@ -24,6 +29,7 @@ export function renderPolygons(app) {
     return (e) => {
       e.stopPropagation();
       const selectedPolygons = pixiStore[SELECTED_POLYGON];
+      console.log(selectedPolygons);
       if (selectedPolygons.includes(index)) {
         pixiStore[SELECTED_POLYGON] = selectedPolygons.filter(
           (polygonIndex) => polygonIndex !== index
@@ -51,8 +57,8 @@ export function renderPolygons(app) {
 
       drawPolygon(polygon, graphic, false, selectedPolygons.includes(index));
 
+      graphic.removeAllListeners();
       if (pixiStore[MODE] != "select") {
-        graphic.removeAllListeners();
         graphic.eventMode = "none";
       } else {
         graphic.eventMode = "static";

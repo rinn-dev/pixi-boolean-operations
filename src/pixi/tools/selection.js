@@ -88,6 +88,7 @@ export function initSelectTool(app) {
     rectanglePoints = [];
     selectionRectangle.clear();
     dispatchEvent(new Event("rubberbandSelectionEnd"));
+    console.log("Here");
   };
 
   const events = {
