@@ -217,5 +217,8 @@ export function initPenTool(app) {
     Object.entries(events).map(([event, handler]) => {
       app.stage.removeEventListener(event, handler);
     });
+
+    // Remove cursor
+    app.view.classList.remove("pen");
   };
 }

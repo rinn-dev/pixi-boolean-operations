@@ -110,6 +110,7 @@ export function initSelectTool(app) {
     // Remove the graphic from the stage and free from memory
     app.stage.removeChild(selectionRectangle);
     selectionRectangle.destroy(true);
+    app.view.classList.remove("selection");
 
     // Remove event listeners
     Object.entries(events).map(([event, handler]) => {
