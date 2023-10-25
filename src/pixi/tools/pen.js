@@ -17,25 +17,6 @@ export function initPenTool(app) {
   app.stage.addChild(drawingPolygon);
 
   /**
-   * Get the handler event for selection mode based on index
-   * @param {number} index - Index of the selected polygon
-   * @returns {() => void} handler function for single selection of polygon
-   */
-  // function handleSelection(index) {
-  //   return (e) => {
-  //     e.stopPropagation();
-  //     const selectedPolygons = pixiStore[SELECTED_POLYGON];
-  //     if (selectedPolygons.includes(index)) {
-  //       pixiStore[SELECTED_POLYGON] = selectedPolygons.filter(
-  //         (polygonIndex) => polygonIndex !== index
-  //       );
-  //     } else {
-  //       pixiStore[SELECTED_POLYGON] = [...selectedPolygons, index];
-  //     }
-  //   };
-  // }
-
-  /**
    * Reset drawing polygon points
    * @returns {void}
    */
@@ -44,34 +25,6 @@ export function initPenTool(app) {
     hintingPos = [];
     drawPolygon(drawingPolygonPoints, drawingPolygon);
   };
-
-  /**
-   * Draw the stored polygons and reset drawing one on deltaValues changed (i.e. on resizing)
-   * @returns {void}
-   */
-  // const drawPolygons = () => {
-  //   const polygons = pixiStore[POLYGONS];
-  //   const selectedPolygons = pixiStore[SELECTED_POLYGON];
-  //   resetDrawingPolygon();
-  //   polygons.forEach((polygon, index) => {
-  //     let graphic = graphics[index];
-  //     if (!graphic) {
-  //       graphic = new Graphics();
-  //       graphics[index] = graphic;
-  //       container.addChild(graphic);
-  //     }
-
-  //     drawPolygon(polygon, graphic, false, selectedPolygons.includes(index));
-
-  //     if (pixiStore[MODE] != "select") {
-  //       graphic.removeAllListeners();
-  //       graphic.eventMode = "none";
-  //     } else {
-  //       graphic.eventMode = "static";
-  //       graphic.addEventListener("pointerdown", handleSelection(index));
-  //     }
-  //   });
-  // };
 
   /**
    * Pointerdown event for pen tool
@@ -95,6 +48,7 @@ export function initPenTool(app) {
       if (isNearStartPoint) {
         // Notice: that must be pure mutation (don't use .push) in order to trigger the proxy traps
         pixiStore[POLYGONS] = [...pixiStore[POLYGONS], drawingPolygonPoints];
+        resetDrawingPolygon();
       } else {
         drawPolygon(drawingPolygonPoints.concat(hintingPos), drawingPolygon);
       }
@@ -131,56 +85,26 @@ export function initPenTool(app) {
     drawPolygon(drawingPolygonPoints, drawingPolygon);
   };
 
-  /**
-   * Toggle the interaction of polygons (to disable interactions on rubberband selection)
-   * @param {boolean} isInteractive - Boolean flag to toggle interactions
-   * @returns {void}
-   */
-  // const toggleInteraction = (isInteractive = true) => {
-  //   graphics.forEach((graphic, index) => {
-  //     graphic.removeAllListeners();
-  //     if (isInteractive) {
-  //       graphic.eventMode = "static";
-  //       graphic.addEventListener("pointerdown", handleSelection(index));
-  //       console.log("Add");
-  //     } else {
-  //       graphic.eventMode = "none";
-  //       console.log("Remove");
-  //     }
-  //   });
-  // };
-
   const events = {
     pointerdown: onPointerDown,
     pointermove: onPointerMove,
     rightclick: onRightClick,
   };
 
-  // const windowEvents = {
-  //   deltaValuesChanged: drawPolygons,
-  //   polygonsChanged: drawPolygons,
-  //   polygonsSelected: drawPolygons, // To paint the highlight of the selected polygons
-  // };
-
-  // const windowTempEvents = {
-  //   rubberbandSelectionStart: () => toggleInteraction(false), // To remove the interactive events on polygons while on rubberband selection
-  //   rubberbandSelectionEnd: () => toggleInteraction(true), // To add the interactive events on polygons while the rubberband selection ends
-  // };
+  const windowEvent = {
+    deltaValuesChanged: resetDrawingPolygon,
+  };
 
   // Add event listeners for pen tool
   Object.entries(events).map(([event, handler]) => {
     app.stage.addEventListener(event, handler);
   });
-
-  // Repaint the polygons on state changes
-  // Object.entries({ ...windowEvents, ...windowTempEvents }).map(
-  //   ([event, handler]) => {
-  //     window.addEventListener(event, handler);
-  //   }
-  // );
+  Object.entries(windowEvent).map(([event, handler]) => {
+    window.addEventListener(event, handler);
+  });
 
   // app.stage.addChild(container);
-  // app.view.classList.add("pen");
+  app.view.classList.add("pen");
 
   // Clean up function to be called on mode change
   return () => {
@@ -190,6 +114,9 @@ export function initPenTool(app) {
     // Remove event listeners
     Object.entries(events).map(([event, handler]) => {
       app.stage.removeEventListener(event, handler);
+    });
+    Object.entries(windowEvent).map(([event, handler]) => {
+      window.removeEventListener(event, handler);
     });
 
     // Remove cursor

@@ -1,5 +1,6 @@
 import { Application } from "pixi.js-legacy";
 import { renderScenes } from "./scene";
+import { renderPolygons } from "./polygons";
 
 /**
  * Initializes the PIXI application and appends it to the specified container element.
@@ -33,6 +34,7 @@ export async function initApplication(container) {
     // Rerender PIXI application on window resizing
     window.addEventListener("resize", () => renderScenes(app, container));
 
+    renderPolygons(app);
     return app;
   } catch (e) {
     console.log(e);

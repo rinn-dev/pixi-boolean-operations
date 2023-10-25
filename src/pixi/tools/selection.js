@@ -85,6 +85,7 @@ export function initSelectTool(app) {
   const onPointerUp = (e) => {
     e.stopPropagation();
     selectionBounds = [];
+    rectanglePoints = [];
     selectionRectangle.clear();
     dispatchEvent(new Event("rubberbandSelectionEnd"));
   };
@@ -116,7 +117,9 @@ export function initSelectTool(app) {
     // Remove event listeners
     Object.entries(events).map(([event, handler]) => {
       app.stage.removeEventListener(event, handler);
-      window.removeEventListener("rerenderStage", drawRect);
     });
+
+    window.removeEventListener("rerenderStage", drawRect);
+    window.removeEventListener("deltaValuesChanged", drawRect);
   };
 }
