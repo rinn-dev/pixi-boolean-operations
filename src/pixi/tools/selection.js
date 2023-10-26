@@ -6,7 +6,7 @@ import {
   syncPointPosition,
 } from "../../utils";
 import { primaryColor } from "../../constants";
-import { POLYGONS, pixiStore } from "../../services/Store";
+import { POLYGONS, SELECTED_POLYGON, pixiStore } from "../../services/Store";
 
 /**
  * Initialize the selection tool of the PIXI application
@@ -92,7 +92,7 @@ export function initSelectTool(app) {
     if (rectanglePoints.length == 4) {
       const polygons = pixiStore[POLYGONS];
       const indexes = getSelectedIndexes(rectanglePoints, polygons);
-      console.log(indexes);
+      pixiStore[SELECTED_POLYGON] = indexes;
     }
 
     selectionBounds = [];
