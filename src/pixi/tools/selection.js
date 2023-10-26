@@ -49,6 +49,8 @@ export function initSelectTool(app) {
     if (e.button === 0) {
       const { x, y } = e.global;
       selectionBounds = syncPointPosition([x, y]);
+
+      // Emit event to notify the start of the selection to disable the interactions on the polygons to avoid conflicts
       dispatchEvent(new Event("rubberbandSelectionStart"));
     }
   };
@@ -88,9 +90,9 @@ export function initSelectTool(app) {
     rectanglePoints = [];
     selectionRectangle.clear();
     dispatchEvent(new Event("rubberbandSelectionEnd"));
-    console.log("Here");
   };
 
+  // Event listeners for selection tool
   const events = {
     pointerdown: onPointerDown,
     pointermove: onPointerMove,

@@ -87,7 +87,8 @@ export function roundPos(startPoint, currentPoint, diffFactor = 5) {
  * Draw a polygon on the PIXI application
  * @param {number[]} points - Node points of the polygon
  * @param {Graphics} graphic - PIXI graphic instance
- * @param {boolean} hasCircles - Precence of circles on each polygon node
+ * @param {[boolean]} hasCircles - Precence of circles on each polygon node
+ * @param {[boolean]} fill - Fill the polygon with color 
  * @returns {void}
  */
 export function drawPolygon(points, graphic, hasCircles = true, fill = true) {
