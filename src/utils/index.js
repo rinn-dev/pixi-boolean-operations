@@ -1,5 +1,6 @@
 import { secondaryColor, whiteColor } from "../constants";
 import { DELTA_VALUES, pixiStore } from "../services/Store";
+import polybool from "polybooljs";
 
 /**
  * Sort and generate rectangle points
@@ -88,7 +89,7 @@ export function roundPos(startPoint, currentPoint, diffFactor = 5) {
  * @param {number[]} points - Node points of the polygon
  * @param {Graphics} graphic - PIXI graphic instance
  * @param {[boolean]} hasCircles - Precence of circles on each polygon node
- * @param {[boolean]} fill - Fill the polygon with color 
+ * @param {[boolean]} fill - Fill the polygon with color
  * @returns {void}
  */
 export function drawPolygon(points, graphic, hasCircles = true, fill = true) {
@@ -127,4 +128,56 @@ export function drawPolygon(points, graphic, hasCircles = true, fill = true) {
       graphic.endFill();
     }
   }
+}
+
+/**
+ * Parser function to convert rectangle points into polygons (i.e, in polygon format) for boolean operations with polygons
+ * @param {[number, number, number, number]} points - The top-left and bottom-right points of a rectangle
+ * @returns {{regions: number[][], inverted: boolean}} Executable rectangle points
+ */
+export function rectToExcutable(points) {
+  const [x1, y1, x2, y2] = points;
+  return {
+    regions: [
+      [
+        [x1, y1],
+        [x2, y1],
+        [x2, y2],
+        [x1, y2],
+      ],
+    ],
+    inverted: false,
+  };
+}
+
+/**
+ * Parser function to convert polygon points into excutable format
+ * @param {number[]} points - The polygon points
+ * @returns {{regions: number[][], inverted: boolean}} Executable polygon points
+ */
+export function polygonsToExecutable(points) {
+  const polygonPoints = [];
+  for (let x = 0; x < points.length; x += 2) {
+    polygonPoints.push([points[x], points[x + 1]]);
+  }
+  return { regions: [polygonPoints], inverted: false };
+}
+
+/**
+ * Function that checks the intersection of the polygons and returns the inserset polygon indexes
+ * @param {number[]} selection - The polygon points of the selection rectangles
+ * @param {number[][]} targets - The polygon points of the target polygon
+ * @returns {number[]} Returns the result of intersection checking
+ */
+export function getSelectedIndexes(selection, targets) {
+  let selectedIndexes = [];
+  const selectionPolygon = rectToExcutable(selection);
+
+  targets.forEach((target, index) => {
+    const targetPolygon = polygonsToExecutable(target);
+    const result = polybool.intersect(selectionPolygon, targetPolygon);
+    if (result.regions?.length > 0) selectedIndexes.push(index);
+  });
+
+  return selectedIndexes;
 }

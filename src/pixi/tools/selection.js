@@ -2,9 +2,11 @@ import { Application, FederatedPointerEvent, Graphics } from "pixi.js-legacy";
 import {
   generateRectPoints,
   getDrawingPoint,
+  getSelectedIndexes,
   syncPointPosition,
 } from "../../utils";
 import { primaryColor } from "../../constants";
+import { POLYGONS, pixiStore } from "../../services/Store";
 
 /**
  * Initialize the selection tool of the PIXI application
@@ -86,6 +88,13 @@ export function initSelectTool(app) {
    */
   const onPointerUp = (e) => {
     e.stopPropagation();
+
+    if (rectanglePoints.length == 4) {
+      const polygons = pixiStore[POLYGONS];
+      const indexes = getSelectedIndexes(rectanglePoints, polygons);
+      console.log(indexes);
+    }
+
     selectionBounds = [];
     rectanglePoints = [];
     selectionRectangle.clear();
