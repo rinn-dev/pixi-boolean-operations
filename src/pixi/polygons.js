@@ -29,7 +29,7 @@ export function renderPolygons(app) {
           (polygonIndex) => polygonIndex !== index
         );
       } else {
-        pixiStore[SELECTED_POLYGON] = [...selectedPolygons, index];
+        pixiStore[SELECTED_POLYGON] = [index];
       }
     };
   }
@@ -51,6 +51,7 @@ export function renderPolygons(app) {
 
       drawPolygon(polygon, graphic, false, selectedPolygons.includes(index));
 
+      // Remove the existing events to avoid duplication
       graphic.removeAllListeners();
       if (pixiStore[MODE] != "select") {
         graphic.eventMode = "none";
