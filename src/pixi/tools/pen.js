@@ -85,12 +85,14 @@ export function initPenTool(app) {
     drawPolygon(drawingPolygonPoints, drawingPolygon);
   };
 
+  // Event listeners for pen tool
   const events = {
     pointerdown: onPointerDown,
     pointermove: onPointerMove,
     rightclick: onRightClick,
   };
 
+  // Reset drawing polygon points on window resize
   const windowEvent = {
     deltaValuesChanged: resetDrawingPolygon,
   };

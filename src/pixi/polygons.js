@@ -51,8 +51,8 @@ export function renderPolygons(app) {
 
       drawPolygon(polygon, graphic, false, selectedPolygons.includes(index));
 
+      graphic.removeAllListeners();
       if (pixiStore[MODE] != "select") {
-        graphic.removeAllListeners();
         graphic.eventMode = "none";
       } else {
         graphic.eventMode = "static";
@@ -78,9 +78,10 @@ export function renderPolygons(app) {
     });
   };
 
+  // Repaint the polygons on certain events
   const windowEvents = {
     deltaValuesChanged: drawPolygons,
-    polygonsChanged: drawPolygons,
+    polygonsChanged: drawPolygons, // After a polygon is added or removed
     polygonsSelected: drawPolygons, // To paint the highlight of the selected polygons
   };
 
