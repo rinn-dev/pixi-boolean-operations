@@ -181,3 +181,17 @@ export function getSelectedIndexes(selection, targets) {
 
   return selectedIndexes;
 }
+
+/**
+ * Function that checks and completes the polygon points
+ * @param {number[]} points - The polygon points
+ * @returns {number[]} Returns the completed polygon points
+ */
+export function completePolygon(points) {
+  let [x, y, ...rest] = [...points];
+  if (x === rest.slice(-1)[0] && y === rest.slice(-2)[0]) {
+    return points;
+  } else {
+    return [...points, x, y];
+  }
+}

@@ -2,6 +2,7 @@ import { Application } from "pixi.js-legacy";
 import { MODE, SELECTED_POLYGON, pixiStore } from "../services/Store";
 import { initPenTool } from "./tools/pen";
 import { initSelectTool } from "./tools/selection";
+import { merge } from "./merge";
 
 /**
  * Bind mode change events to the buttons
@@ -25,10 +26,12 @@ export function bindModeEvents(app) {
  */
 export function changeMode(e, mode) {
   pixiStore[MODE] = mode;
-  document.querySelectorAll(".tool").forEach((tool) => {
-    tool.classList.remove("active");
-  });
-  e.target.classList.add("active");
+  if(mode != "merge") {
+    document.querySelectorAll(".tool").forEach((tool) => {
+      tool.classList.remove("active");
+    });
+    e.target.classList.add("active");
+  }
 }
 
 /**
@@ -41,16 +44,20 @@ export function getModeHandler(app, cleanupFunction = () => void 0) {
   return () => {
     const selectedMode = pixiStore[MODE];
     // Clean up events and memory of the previous mode
-    cleanupFunction && cleanupFunction();
+    if (selectedMode !== "merge") {
+      cleanupFunction && cleanupFunction();
 
-    // Reassign the clean up function for current mode to be used in the next mode change
-    switch (selectedMode) {
-      case "pen":
-        cleanupFunction = initPenTool(app);
-        break;
-      default:
-        cleanupFunction = initSelectTool(app);
-        break;
+      // Reassign the clean up function for current mode to be used in the next mode change
+      switch (selectedMode) {
+        case "pen":
+          cleanupFunction = initPenTool(app);
+          break;
+        default:
+          cleanupFunction = initSelectTool(app);
+          break;
+      }
+    } else {
+      merge()
     }
     // To trigger adding selection handlers on polygons
     pixiStore[SELECTED_POLYGON] = [];

@@ -41,6 +41,10 @@ export function renderPolygons(app) {
   const drawPolygons = () => {
     const polygons = pixiStore[POLYGONS];
     const selectedPolygons = pixiStore[SELECTED_POLYGON];
+
+    // Clear the previous graphics
+    graphics.forEach((graphic) => graphic.clear());
+
     polygons.forEach((polygon, index) => {
       let graphic = graphics[index];
       if (!graphic) {
