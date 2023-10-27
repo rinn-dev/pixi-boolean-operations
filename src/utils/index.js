@@ -192,6 +192,7 @@ export function completePolygon(points) {
   if (x === rest.slice(-1)[0] && y === rest.slice(-2)[0]) {
     return points;
   } else {
+    // Complete the polygon by adding the first x,y at the end for points connection
     return [...points, x, y];
   }
 }
