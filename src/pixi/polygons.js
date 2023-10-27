@@ -42,8 +42,8 @@ export function renderPolygons(app) {
     const polygons = pixiStore[POLYGONS];
     const selectedPolygons = pixiStore[SELECTED_POLYGON];
 
-    // Clear the previous graphics
-    graphics.forEach((graphic) => graphic.clear());
+    // To make sure the merged graphics always clean its drawings
+    graphics.slice(polygons.length).forEach((graphic) => graphic.clear());
 
     polygons.forEach((polygon, index) => {
       let graphic = graphics[index];
