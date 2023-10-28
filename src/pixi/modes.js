@@ -26,7 +26,7 @@ export function bindModeEvents(app) {
  */
 export function changeMode(e, mode) {
   pixiStore[MODE] = mode;
-  if(mode != "merge") {
+  if (mode != "merge") {
     document.querySelectorAll(".tool").forEach((tool) => {
       tool.classList.remove("active");
     });
@@ -57,7 +57,8 @@ export function getModeHandler(app, cleanupFunction = () => void 0) {
           break;
       }
     } else {
-      merge()
+      merge();
+      pixiStore[MODE] = "select";
     }
     // To trigger adding selection handlers on polygons
     pixiStore[SELECTED_POLYGON] = [];
