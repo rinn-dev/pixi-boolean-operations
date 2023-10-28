@@ -43,8 +43,8 @@ export function changeMode(e, mode) {
 export function getModeHandler(app, cleanupFunction = () => void 0) {
   return () => {
     const selectedMode = pixiStore[MODE];
-    // Clean up events and memory of the previous mode
     if (selectedMode !== "merge") {
+      // Clean up events and memory of the previous mode
       cleanupFunction && cleanupFunction();
 
       // Reassign the clean up function for current mode to be used in the next mode change
@@ -57,6 +57,7 @@ export function getModeHandler(app, cleanupFunction = () => void 0) {
           break;
       }
     } else {
+      // Merge is just a function rather than a mode
       merge();
       pixiStore[MODE] = "select";
     }
