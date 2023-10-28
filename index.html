@@ -15,10 +15,12 @@
       <h1 class="text-3xl font-bold text-center py-10 text-red-500">
         PIXI Boolean Operations!
       </h1>
-      <div class="w-full h-full pt-20 pb-10">
+      <div class="w-full h-full pt-20 pb-6 relative">
         <div
           class="canvas-container w-[min(100%,800px)] mx-auto border-2 border-black/20 border-dashed"
         ></div>
+        <div class='text-red-500 text-sm font-medium text-center absolute left-3 top-5 w-full' id="error-container">
+        </div> 
       </div>
     </div>
     <div class="flex justify-center items-center gap-4 [&>.active]:bg-blue-400 [&>button]:rounded-full [&>button]:block [&>button]:px-4 [&>.active]:text-white [&>button]:py-1 font-bold text-sm [&>button:not(.active)]:border-2">

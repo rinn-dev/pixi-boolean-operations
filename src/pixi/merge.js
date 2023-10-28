@@ -30,10 +30,13 @@ export function merge() {
   const mergedPolygons = polybool.polygon(segments).regions;
 
   if (mergedPolygons.length > 1) {
-    // Display Error
+    // Display Error as the merge process fails, selected polygons are not intersecting
+    dispatchEvent(
+      new CustomEvent("pixiError", { detail: { message: "Merge Fails" } })
+    );
   } else {
     // Flat the array and complete the polygon points
-    const mergedPolygon = completePolygon(mergedPolygons[0].flat());
+    const mergedPolygon = completePolygon(mergedPolygons.pop().flat());
 
     // Update the store with the merged polygons
     pixiStore[POLYGONS] = polygons
