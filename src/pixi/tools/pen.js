@@ -1,14 +1,16 @@
 import { Application, FederatedPointerEvent, Graphics } from "pixi.js-legacy";
 import { drawPolygon, roundPos, syncPointPosition } from "../../utils";
-import { POLYGONS, pixiStore } from "../../services/Store";
+import { secondaryColor } from "../../constants";
 
 /**
  * Initialize the pen tool that is used to draw polygons of the PIXI application
  *
  * @param {Application<ICanvas>} app - The PIXI application instance.
+ * @param {(newPolygon: number[]) => void} addPolygon - The mutation function for polygons storage.
+ * @param {number} [baseColor=secondaryColor] - The color of the polygon.
  * @return {() => void} A function that cleans up the pen tool event listeners.
  */
-export function initPenTool(app) {
+export function initPenTool(app, addPolygon, baseColor = secondaryColor) {
   let drawingPolygonPoints = [];
   let hintingPos = [];
 
@@ -23,7 +25,11 @@ export function initPenTool(app) {
   const resetDrawingPolygon = () => {
     drawingPolygonPoints = [];
     hintingPos = [];
-    drawPolygon(drawingPolygonPoints, drawingPolygon);
+    drawPolygon({
+      points: drawingPolygonPoints,
+      graphic: drawingPolygon,
+      baseColor,
+    });
   };
 
   /**
@@ -47,10 +53,14 @@ export function initPenTool(app) {
       roundedPos.forEach((value) => drawingPolygonPoints.push(value));
       if (isNearStartPoint) {
         // Notice: that must be pure mutation (don't use .push) in order to trigger the proxy traps
-        pixiStore[POLYGONS] = [...pixiStore[POLYGONS], drawingPolygonPoints];
+        addPolygon(drawingPolygonPoints);
         resetDrawingPolygon();
       } else {
-        drawPolygon(drawingPolygonPoints.concat(hintingPos), drawingPolygon);
+        drawPolygon({
+          points: drawingPolygonPoints.concat(hintingPos),
+          graphic: drawingPolygon,
+          baseColor,
+        });
       }
     }
   };
@@ -69,7 +79,11 @@ export function initPenTool(app) {
 
       // Calculate and round the hinting position based on start point and current point
       hintingPos = roundPos([x1, y1], syncPointPosition([x, y]))[0];
-      drawPolygon(drawingPolygonPoints.concat(hintingPos), drawingPolygon);
+      drawPolygon({
+        points: drawingPolygonPoints.concat(hintingPos),
+        graphic: drawingPolygon,
+        baseColor,
+      });
     }
   };
 
@@ -82,7 +96,11 @@ export function initPenTool(app) {
   const onRightClick = (e) => {
     e.stopPropagation();
     resetDrawingPolygon();
-    drawPolygon(drawingPolygonPoints, drawingPolygon);
+    drawPolygon({
+      points: drawingPolygonPoints,
+      graphic: drawingPolygon,
+      baseColor,
+    });
   };
 
   // Event listeners for pen tool

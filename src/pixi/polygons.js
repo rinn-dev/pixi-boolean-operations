@@ -53,7 +53,12 @@ export function renderPolygons(app) {
         container.addChild(graphic);
       }
 
-      drawPolygon(polygon, graphic, false, selectedPolygons.includes(index));
+      drawPolygon({
+        points: polygon,
+        graphic,
+        hasCircles: false,
+        fill: selectedPolygons.includes(index),
+      });
 
       // Remove the existing events to avoid duplication
       graphic.removeAllListeners();

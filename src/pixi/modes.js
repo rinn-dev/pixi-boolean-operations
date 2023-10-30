@@ -1,5 +1,5 @@
 import { Application } from "pixi.js-legacy";
-import { MODE, SELECTED_POLYGON, pixiStore } from "../services/Store";
+import { MODE, POLYGONS, SELECTED_POLYGON, pixiStore } from "../services/Store";
 import { initPenTool } from "./tools/pen";
 import { initSelectTool } from "./tools/selection";
 import { merge } from "./merge";
@@ -50,7 +50,9 @@ export function getModeHandler(app, cleanupFunction = () => void 0) {
       // Reassign the clean up function for current mode to be used in the next mode change
       switch (selectedMode) {
         case "pen":
-          cleanupFunction = initPenTool(app);
+          cleanupFunction = initPenTool(app, (newPolygon) => {
+            pixiStore[POLYGONS] = [...pixiStore[POLYGONS], newPolygon];
+          });
           break;
         default:
           cleanupFunction = initSelectTool(app);
