@@ -3,6 +3,8 @@ import { MODE, POLYGONS, SELECTED_POLYGON, pixiStore } from "../services/Store";
 import { initPenTool } from "./tools/pen";
 import { initSelectTool } from "./tools/selection";
 import { merge } from "./merge";
+import { tertiaryColor } from "../constants";
+import { slice } from "./slice";
 
 /**
  * Bind mode change events to the buttons
@@ -53,6 +55,15 @@ export function getModeHandler(app, cleanupFunction = () => void 0) {
           cleanupFunction = initPenTool(app, (newPolygon) => {
             pixiStore[POLYGONS] = [...pixiStore[POLYGONS], newPolygon];
           });
+          break;
+        case "split":
+          cleanupFunction = initPenTool(
+            app,
+            (sliceBoundary) => {
+              slice(sliceBoundary);
+            },
+            tertiaryColor
+          );
           break;
         default:
           cleanupFunction = initSelectTool(app);
