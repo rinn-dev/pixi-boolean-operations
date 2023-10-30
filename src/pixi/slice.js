@@ -27,8 +27,8 @@ export function slice(sliceBoundary) {
   if (targetPolygon != undefined) {
     const difference = polybool.difference(targetPolygon, boundary);
 
-    // If the difference is more than 2, it means the polygon slicing is successful
-    if (difference.regions.length > 2) {
+    // If the difference is more than 1, it means the polygon slicing is successful
+    if (difference.regions.length > 1) {
       // Transform the difference into multiple polygons
       const newPolygons = difference.regions.map((polygon) =>
         completePolygon(polygon.flat())
