@@ -6,9 +6,10 @@ import { POLYGONS, pixiStore } from "../../services/Store";
  * Initialize the pen tool that is used to draw polygons of the PIXI application
  *
  * @param {Application<ICanvas>} app - The PIXI application instance.
+ * @param {(newPolygon: number[]) => void} addPolygon - The mutation function for polygons storage.
  * @return {() => void} A function that cleans up the pen tool event listeners.
  */
-export function initPenTool(app) {
+export function initPenTool(app, addPolygon) {
   let drawingPolygonPoints = [];
   let hintingPos = [];
 
@@ -47,7 +48,7 @@ export function initPenTool(app) {
       roundedPos.forEach((value) => drawingPolygonPoints.push(value));
       if (isNearStartPoint) {
         // Notice: that must be pure mutation (don't use .push) in order to trigger the proxy traps
-        pixiStore[POLYGONS] = [...pixiStore[POLYGONS], drawingPolygonPoints];
+        addPolygon(drawingPolygonPoints);
         resetDrawingPolygon();
       } else {
         drawPolygon(drawingPolygonPoints.concat(hintingPos), drawingPolygon);
