@@ -7,7 +7,7 @@ export function handleError(e) {
   const message = e.detail.message;
   if (message) {
     let errorElement = document.getElementById("error-container");
-    errorElement.innerText = `* The selected polygons must be touching to perform merging.`;
+    errorElement.innerText = `* ${message}`;
     setTimeout(() => (errorElement.innerText = ""), 5000);
   }
 }

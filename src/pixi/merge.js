@@ -32,7 +32,11 @@ export function merge() {
   if (mergedPolygons.length > 1) {
     // Display Error as the merge process fails, selected polygons are not intersecting
     dispatchEvent(
-      new CustomEvent("pixiError", { detail: { message: "Merge Fails" } })
+      new CustomEvent("pixiError", {
+        detail: {
+          message: "The selected polygons must be touching to perform merging",
+        },
+      })
     );
   } else {
     // Flat the array and complete the polygon points
