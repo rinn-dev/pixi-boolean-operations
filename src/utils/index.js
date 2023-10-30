@@ -86,18 +86,27 @@ export function roundPos(startPoint, currentPoint, diffFactor = 5) {
 
 /**
  * Draw a polygon on the PIXI application
- * @param {number[]} points - Node points of the polygon
- * @param {Graphics} graphic - PIXI graphic instance
- * @param {[boolean]} hasCircles - Precence of circles on each polygon node
- * @param {[boolean]} fill - Fill the polygon with color
+ *
+ * @param {Object} params - Parameters for drawing the polygon
+ * @param {number[]} params.points - Node points of the polygon
+ * @param {Graphics} params.graphic - PIXI graphic instance
+ * @param {boolean} [params.hasCircles=true] - Presence of circles on each polygon node
+ * @param {boolean} [params.fill=true] - Fill the polygon with color
+ * @param {number} [params.baseColor=secondaryColor] - The base color of the polygon
  * @returns {void}
  */
-export function drawPolygon(points, graphic, hasCircles = true, fill = true) {
+export function drawPolygon({
+  points,
+  graphic,
+  hasCircles = true,
+  fill = true,
+  baseColor = secondaryColor,
+}) {
   graphic.clear();
 
   if (graphic != null && points.length > 0) {
-    graphic.lineStyle(2, secondaryColor);
-    graphic.beginFill(secondaryColor, fill ? 0.25 : 0.05);
+    graphic.lineStyle(2, baseColor);
+    graphic.beginFill(baseColor, fill ? 0.25 : 0.05);
 
     // Get the drawing points based on current screen size
     const nodes = getDrawingPoint(points);
@@ -115,14 +124,14 @@ export function drawPolygon(points, graphic, hasCircles = true, fill = true) {
 
     // Draw circles on each polygon node
     if (hasCircles) {
-      graphic.lineStyle(2, secondaryColor);
-      graphic.beginFill(secondaryColor);
+      graphic.lineStyle(2, baseColor);
+      graphic.beginFill(baseColor);
       while (nodes.length) {
         const x = nodes.shift();
         const y = nodes.shift();
         graphic.drawCircle(x, y, 3.5);
 
-        graphic.lineStyle(2, secondaryColor);
+        graphic.lineStyle(2, baseColor);
         graphic.beginFill(whiteColor);
       }
       graphic.endFill();
