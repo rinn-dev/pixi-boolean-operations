@@ -1,5 +1,5 @@
 import { Application } from "pixi.js-legacy";
-import { renderScenes } from "./scene";
+import { initScenes, renderScenes } from "./scene";
 import { renderPolygons } from "./polygons";
 
 /**
@@ -29,10 +29,13 @@ export async function initApplication(container) {
     // Appending canvas into the container
     container.appendChild(app.view);
 
-    await renderScenes(app, container);
+    const bgSprite = await initScenes(app);
+    renderScenes(app, container, bgSprite);
 
     // Rerender PIXI application on window resizing
-    window.addEventListener("resize", () => renderScenes(app, container));
+    window.addEventListener("resize", () =>
+      renderScenes(app, container, bgSprite)
+    );
 
     renderPolygons(app);
     return app;
