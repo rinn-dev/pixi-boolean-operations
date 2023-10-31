@@ -31,6 +31,8 @@ export async function initScenes(app) {
 
   // Disable inline style for cursor
   app.renderer.plugins.interaction.cursorStyles.default = null;
+  // Disable highlight on clicking in touch devices
+  app.view.classList.add("no-highlight");
 
   // Disable right click context menu
   app.view.addEventListener("contextmenu", (e) => {
